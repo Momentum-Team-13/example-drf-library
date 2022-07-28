@@ -14,11 +14,11 @@ drf-nested-routers = "*"
 gunicorn = "*"
 djoser = "*"
 django-cors-headers = "*"
+pillow = "*"
 
 [dev-packages]
 black = "*"
 flake8 = "*"
-pdbpp = "*"
 
 [requires]
 python_version = "3.10"

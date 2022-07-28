@@ -12,6 +12,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.parsers import JSONParser, FileUploadParser
 
 from .models import Book, BookRecord, BookReview
 from .serializers import (
@@ -33,6 +34,7 @@ class BookViewSet(ModelViewSet):
     queryset = Book.objects.all().order_by("title")
     serializer_class = BookDetailSerializer
     permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+    parser_classes = [FileUploadParser, JSONParser]
 
     def get_serializer_class(self):
         if self.action in ["list"]:
