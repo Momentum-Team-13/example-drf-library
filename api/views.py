@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.generics import (
+    ListAPIView,
     ListCreateAPIView,
     RetrieveDestroyAPIView,
     get_object_or_404,
@@ -104,11 +105,14 @@ class BookReviewListCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return BookReview.objects.filter(book_id=self.kwargs["book_pk"])
+        queryset = BookReview.objects.filter(book_id=self.kwargs["book_pk"])
+
+        return queryset
 
     def perform_create(self, serializer, **kwargs):
         book = get_object_or_404(Book, pk=self.kwargs["book_pk"])
         serializer.save(reviewed_by=self.request.user, book=book)
+
 
 
 class BookReviewDetailView(RetrieveDestroyAPIView):
@@ -136,3 +140,14 @@ class CreateFavoriteView(APIView):
         serializer = BookDetailSerializer(book, context={"request": request})
         # return a response
         return Response(serializer.data, status=201)
+
+
+class BookReviewSearchView(ListAPIView):
+    serializer_class = BookReviewSerializer
+    search_term = ''
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get("search") or self.search_term
+        # this is using the search method for postgres full-text search
+        # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#the-search-lookup
+        return BookReview.objects.filter(body__search=search_term)
