@@ -19,7 +19,9 @@ env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False),
     USE_EMAIL=(bool, False),
+    USE_S3=(bool, False),
 )
+
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -164,29 +166,30 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # to allow file uploads
 CORS_ALLOW_HEADERS = list(default_headers) + [
-    'content-disposition',
+    "content-disposition",
 ]
 
 # set this variable in your .env file.
 # You usually want it set to false in dev and true in prod,
 # but you can toggle it in dev so you can test your AWS bucket
-if env('USE_S3'):
+# see line
+if env("USE_S3"):
     # These are necessary for AWS.
     # Make sure these are set on Heroku as well
-    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
 
     # These are optional
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
     AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': 'max-age=86400',
+        "CacheControl": "max-age=86400",
     }
     AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = 'public-read'
+    AWS_DEFAULT_ACL = "public-read"
     AWS_QUERYSTRING_AUTH = False
 
     # This is for django-storages with boto3, which is a Python SDK for S3 provided by AWS
     # You need to have django-storages in your dependencies
     # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
