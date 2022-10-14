@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import django_on_heroku
 import environ
 from corsheaders.defaults import default_headers
 
@@ -20,6 +19,7 @@ env = environ.Env(
     DEBUG=(bool, False),
     USE_EMAIL=(bool, False),
     USE_S3=(bool, False),
+    RENDER_EXTERNAL_HOSTNAME=(bool, None),
 )
 
 environ.Env.read_env()
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -137,6 +138,15 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+if not DEBUG:
+    # Tell Django to copy statics to the `staticfiles` directory
+    # in your application directory on Render.
+    STATIC_ROOT = [BASE_DIR / "staticfiles"]
+
+    # Turn on WhiteNoise storage backend that takes care of compressing static files
+    # and creating unique names for each version so they can safely be cached forever.
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # uploaded files -- this is different from static files
 # https://docs.djangoproject.com/en/4.0/topics/files/
 MEDIA_URL = "/media/"
@@ -149,8 +159,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "api.User"
 
-django_on_heroku.settings(locals())
-del DATABASES["default"]["OPTIONS"]["sslmode"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -186,6 +194,9 @@ if env("USE_S3"):
         "CacheControl": "max-age=86400",
     }
     AWS_S3_FILE_OVERWRITE = False
+
+    # https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
+    # This line sets your default permissions to public read-only
     AWS_DEFAULT_ACL = "public-read"
     AWS_QUERYSTRING_AUTH = False
 
@@ -193,3 +204,8 @@ if env("USE_S3"):
     # You need to have django-storages in your dependencies
     # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+RENDER_EXTERNAL_HOSTNAME = env("RENDER_EXTERNAL_HOSTNAME")
+
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)

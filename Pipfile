@@ -17,6 +17,7 @@ django-cors-headers = "*"
 pillow = "*"
 boto3 = "*"
 django-storages = "*"
+whitenoise = {extras = ["brotli"], version = "*"}
 
 [dev-packages]
 black = "*"
