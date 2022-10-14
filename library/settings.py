@@ -37,9 +37,10 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
+ALLOWED_HOSTS = []
 
 if env("RENDER"):
-    ALLOWED_HOSTS = env.list("RENDER_EXTERNAL_HOSTNAME")
+    ALLOWED_HOSTS.append(env("RENDER_EXTERNAL_HOSTNAME"))
 
 
 # Application definition
