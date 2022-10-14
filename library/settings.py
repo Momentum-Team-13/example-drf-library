@@ -19,7 +19,7 @@ env = environ.Env(
     DEBUG=(bool, False),
     USE_EMAIL=(bool, False),
     USE_S3=(bool, False),
-    RENDER_EXTERNAL_HOSTNAME=(bool, None),
+    RENDER=(bool, False),
 )
 
 environ.Env.read_env()
@@ -37,7 +37,9 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+
+if env("RENDER"):
+    ALLOWED_HOSTS = env.list("RENDER_EXTERNAL_HOSTNAME")
 
 
 # Application definition
@@ -204,8 +206,3 @@ if env("USE_S3"):
     # You need to have django-storages in your dependencies
     # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-RENDER_EXTERNAL_HOSTNAME = env("RENDER_EXTERNAL_HOSTNAME")
-
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
