@@ -186,7 +186,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 # see line
 if env("USE_S3"):
     # These are necessary for AWS.
-    # Make sure these are set on Heroku as well
+    # Make sure these are set in the production environment as well
     AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
