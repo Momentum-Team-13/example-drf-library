@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import django_on_heroku
 import environ
 from corsheaders.defaults import default_headers
 
@@ -148,9 +147,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "api.User"
-
-django_on_heroku.settings(locals())
-del DATABASES["default"]["OPTIONS"]["sslmode"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
