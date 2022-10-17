@@ -16,6 +16,7 @@ django-cors-headers = "*"
 pillow = "*"
 boto3 = "*"
 django-storages = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 black = "*"
