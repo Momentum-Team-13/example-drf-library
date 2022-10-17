@@ -19,6 +19,7 @@ env = environ.Env(
     DEBUG=(bool, False),
     USE_EMAIL=(bool, False),
     USE_S3=(bool, False),
+    RENDER=(bool, False),
 )
 
 environ.Env.read_env()
@@ -37,6 +38,9 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = []
+
+if env("RENDER"):
+    ALLOWED_HOSTS.append(env("RENDER_EXTERNAL_HOSTNAME"))
 
 
 # Application definition
@@ -59,6 +63,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -145,6 +150,15 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+if not DEBUG:
+    # Tell Django to copy statics to the `staticfiles` directory
+    # in your application directory on Render.
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+
+    # Turn on WhiteNoise storage backend that takes care of compressing static files
+    # and creating unique names for each version so they can safely be cached forever.
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # uploaded files -- this is different from static files
 # https://docs.djangoproject.com/en/4.0/topics/files/
 MEDIA_URL = "/media/"
@@ -180,7 +194,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 # see line
 if env("USE_S3"):
     # These are necessary for AWS.
-    # Make sure these are set on Heroku as well
+    # Make sure these are set in the production environment as well
     AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
@@ -191,6 +205,9 @@ if env("USE_S3"):
         "CacheControl": "max-age=86400",
     }
     AWS_S3_FILE_OVERWRITE = False
+
+    # https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl
+    # This line sets your default permissions to public read-only
     AWS_DEFAULT_ACL = "public-read"
     AWS_QUERYSTRING_AUTH = False
 
