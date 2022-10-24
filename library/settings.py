@@ -207,3 +207,8 @@ if env("USE_S3"):
     # You need to have django-storages in your dependencies
     # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
     DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+# for render deploy
+DJANGO_SUPERUSER_USERNAME=env("DJANGO_SUPERUSER_USERNAME")
+DJANGO_SUPERUSER_PASSWORD=env("DJANGO_SUPERUSER_PASSWORD")
+DJANGO_SUPERUSER_EMAIL=env("DJANGO_SUPERUSER_EMAIL")
