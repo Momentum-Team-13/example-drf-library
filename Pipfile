@@ -17,6 +17,7 @@ pillow = "*"
 boto3 = "*"
 django-storages = "*"
 whitenoise = {extras = ["brotli"], version = "*"}
+psycopg2-binary = "*"
 
 [dev-packages]
 black = "*"
