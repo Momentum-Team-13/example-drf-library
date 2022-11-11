@@ -155,6 +155,9 @@ if not DEBUG:
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -212,3 +215,4 @@ if env("USE_S3"):
 DJANGO_SUPERUSER_USERNAME=env("DJANGO_SUPERUSER_USERNAME")
 DJANGO_SUPERUSER_PASSWORD=env("DJANGO_SUPERUSER_PASSWORD")
 DJANGO_SUPERUSER_EMAIL=env("DJANGO_SUPERUSER_EMAIL")
+

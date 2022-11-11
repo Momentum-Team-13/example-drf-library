@@ -32,7 +32,7 @@ class BookDetailSerializer(serializers.ModelSerializer):
     reviews = serializers.HyperlinkedRelatedField(
         many=True, read_only=True, view_name="book_review_detail"
     )
-    title_page = serializers.ImageField()
+    title_page_image=serializers.ImageField(required=False)
 
     class Meta:
         model = Book
@@ -44,9 +44,16 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "featured",
             "reviews",
             "favorite_count",
-            "title_page"
+            "title_page_image",
         )
 
+    def save_image_attachment(self, instance, file):
+        instance.title_page.save(file.name, file, save=True)
+
+    def update(self, instance, validated_data):
+      if "file" in self.initial_data:
+          self.save_image_attachment(instance, self.initial_data["file"])
+      return instance
 
     def update(self, instance, validated_data):
       if "file" in self.initial_data:

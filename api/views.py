@@ -14,6 +14,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.parsers import JSONParser, FileUploadParser
 
 from .models import Book, BookRecord, BookReview
 from .serializers import (

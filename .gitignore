@@ -152,4 +152,6 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
 .vscode
-user_profile_photos
+
+# uploaded images
+book_covers
