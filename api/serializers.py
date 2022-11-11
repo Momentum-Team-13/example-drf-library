@@ -44,11 +44,11 @@ class BookDetailSerializer(serializers.ModelSerializer):
             "featured",
             "reviews",
             "favorite_count",
-            "title_page_image",
+            "title_page",
         )
 
     def save_image_attachment(self, instance, file):
-        instance.title_page_image.save(file.name, file, save=True)
+        instance.title_page.save(file.name, file, save=True)
 
     def update(self, instance, validated_data):
       if "file" in self.initial_data:
