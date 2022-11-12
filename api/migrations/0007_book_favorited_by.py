@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0006_alter_bookrecord_reading_state_and_more'),
+        ("api", "0006_alter_bookrecord_reading_state_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='book',
-            name='favorited_by',
-            field=models.ManyToManyField(related_name='favorite_books', to=settings.AUTH_USER_MODEL),
+            model_name="book",
+            name="favorited_by",
+            field=models.ManyToManyField(
+                related_name="favorite_books", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

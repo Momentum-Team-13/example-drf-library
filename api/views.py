@@ -35,16 +35,12 @@ from django.db.models import Count
 class BookViewSet(ModelViewSet):
     serializer_class = BookDetailSerializer
     permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+    parser_classes = [JSONParser, FileUploadParser]
 
     def get_serializer_class(self):
         if self.action in ["list"]:
             return BookSerializer
         return super().get_serializer_class()
-
-    def get_parsers(self):
-        if self.request.FILES:
-            self.parser_classes.append(FileUploadParser)
-        return [parser() for parser in self.parser_classes]
 
     @action(detail=False)
     def featured(self, request):
